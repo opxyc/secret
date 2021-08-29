@@ -122,3 +122,15 @@ func (v *Vault) List() ([]string, error) {
 	}
 	return keys, nil
 }
+
+func (v *Vault) ChangeEncodingKey(newEncodingKey string) error {
+	err := v.load()
+	if err != nil {
+		return err
+	}
+
+	v.encodingKey = newEncodingKey
+
+	err = v.save()
+	return err
+}

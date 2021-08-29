@@ -28,12 +28,13 @@ func init() {
 	rootCmd.AddCommand(&getCmd)
 	rootCmd.AddCommand(&setCmd)
 	rootCmd.AddCommand(&listCmd)
+	rootCmd.AddCommand(&passwdCmd)
 }
 
 // getEncodingKey reads the encoding key from user
 // with no echo to stdin.
-func getEncodingKey() (string, error) {
-	fmt.Print("encoding key : ")
+func readKeyFromUser(helperText string) (string, error) {
+	fmt.Print(helperText)
 	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return "", err

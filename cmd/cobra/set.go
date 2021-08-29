@@ -16,9 +16,9 @@ var setCmd = cobra.Command{
 			fmt.Println("Incorrect usage. Use help.")
 			return
 		}
-		encodingKey, err := getEncodingKey()
+		encodingKey, err := readKeyFromUser("key : ")
 		if err != nil {
-			fmt.Println("Failed to read the encoding key.")
+			fmt.Println("Failed to read the key.")
 			return
 		}
 

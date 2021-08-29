@@ -11,7 +11,7 @@ var listCmd = cobra.Command{
 	Use:   "list",
 	Short: "Lists all keys stored",
 	Run: func(cmd *cobra.Command, args []string) {
-		encodingKey, err := getEncodingKey()
+		encodingKey, err := readKeyFromUser("key : ")
 		if err != nil {
 			fmt.Println("Failed to read the encoding key.")
 			return
