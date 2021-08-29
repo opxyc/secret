@@ -17,6 +17,7 @@ secret [command]
 Available Commands:
   get         Gets a secret from your secret storage
   set         Sets a secret in your secret storage.
+  list        Lists all keys stored
 
 Flags:
   -f, --file string   the path to file where secrets are stored

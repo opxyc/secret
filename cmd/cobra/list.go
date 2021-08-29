@@ -7,14 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var getCmd = cobra.Command{
-	Use:   "get",
-	Short: "Gets a secret from your secret storage",
+var listCmd = cobra.Command{
+	Use:   "list",
+	Short: "Lists all keys stored",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 1 {
-			fmt.Println("Incorrect usage. Use help.")
-			return
-		}
 		encodingKey, err := getEncodingKey()
 		if err != nil {
 			fmt.Println("Failed to read the encoding key.")
@@ -24,12 +20,18 @@ var getCmd = cobra.Command{
 		verifyFilePath(&filePath)
 
 		v := secret.New(encodingKey, filePath)
-		key := args[0]
-		value, err := v.Get(key)
+		keys, err := v.List()
 		if err != nil {
-			fmt.Printf("No value set for '%s'\n", key)
+			fmt.Printf("%s\n", err.Error())
 			return
 		}
-		fmt.Println(value)
+		if len(keys) == 0 {
+			fmt.Println("It's empty!")
+			return
+		}
+		fmt.Println("Stored keys\n---")
+		for _, k := range keys {
+			fmt.Println(k)
+		}
 	},
 }

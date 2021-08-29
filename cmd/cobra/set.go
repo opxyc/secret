@@ -8,9 +8,8 @@ import (
 )
 
 var setCmd = cobra.Command{
-	Use:     "set",
-	Short:   "Sets a secret in your secret storage.",
-	Example: "secret set key value -k encodingKey",
+	Use:   "set",
+	Short: "Sets a secret in your secret storage.",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 2 {

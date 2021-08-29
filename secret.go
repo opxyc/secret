@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/opxyc/secret/cipher"
 )
@@ -26,7 +25,6 @@ func New(encodingKey, filepath string) *Vault {
 type Vault struct {
 	encodingKey string
 	filePath    string
-	mutex       sync.Mutex
 	keyValues   map[string]string
 }
 
@@ -87,8 +85,6 @@ func (v *Vault) writeKeyValues(w io.Writer) error {
 
 // Get retrieves the value corresponding to the key.
 func (v *Vault) Get(key string) (string, error) {
-	v.mutex.Lock()
-	defer v.mutex.Unlock()
 	if len(v.keyValues) == 0 {
 		err := v.load()
 		if err != nil {
@@ -105,9 +101,6 @@ func (v *Vault) Get(key string) (string, error) {
 
 // Set adds key,value to the secrets file.
 func (v *Vault) Set(key, value string) error {
-	v.mutex.Lock()
-	defer v.mutex.Unlock()
-
 	err := v.load()
 	if err != nil {
 		return err
@@ -115,4 +108,17 @@ func (v *Vault) Set(key, value string) error {
 
 	v.keyValues[key] = value
 	return v.save()
+}
+
+func (v *Vault) List() ([]string, error) {
+	err := v.load()
+	if err != nil {
+		return nil, err
+	}
+
+	var keys []string
+	for k := range v.keyValues {
+		keys = append(keys, k)
+	}
+	return keys, nil
 }
