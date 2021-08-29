@@ -16,9 +16,10 @@ secret [command]
 
 Available Commands:
   get         Gets a secret from your secret storage
-  set         Sets a secret in your secret storage.
-  list        Lists all keys stored
-  passwd      Change current key of a secrets file
+  ls          Lists all keys stored
+  passwd      Change current key of your secret storage
+  rm          Removes a key and it's value from secret storage
+  set         Sets a secret in your secret storage
 
 Flags:
   -f, --file string   the path to file where secrets are stored

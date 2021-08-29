@@ -27,8 +27,9 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&filePath, "file", "f", "", "the path to file where secrets are stored")
 	rootCmd.AddCommand(&getCmd)
 	rootCmd.AddCommand(&setCmd)
-	rootCmd.AddCommand(&listCmd)
+	rootCmd.AddCommand(&lsCmd)
 	rootCmd.AddCommand(&passwdCmd)
+	rootCmd.AddCommand(&rmCmd)
 }
 
 // getEncodingKey reads the encoding key from user

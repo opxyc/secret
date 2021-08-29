@@ -131,6 +131,19 @@ func (v *Vault) ChangeEncodingKey(newEncodingKey string) error {
 
 	v.encodingKey = newEncodingKey
 
-	err = v.save()
-	return err
+	return v.save()
+}
+
+func (v *Vault) Remove(key string) error {
+	err := v.load()
+	if err != nil {
+		return err
+	}
+	_, ok := v.keyValues[key]
+	if !ok {
+		return errors.New(fmt.Sprintf("no value set for '%s'", key))
+	}
+	delete(v.keyValues, key)
+
+	return v.save()
 }

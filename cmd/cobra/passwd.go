@@ -9,7 +9,7 @@ import (
 
 var passwdCmd = cobra.Command{
 	Use:   "passwd",
-	Short: "Change current key of a secrets file",
+	Short: "Change current key of your secret storage",
 	Run: func(cmd *cobra.Command, args []string) {
 		currentEncodingKey, err := readKeyFromUser("key : ")
 		if err != nil {

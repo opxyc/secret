@@ -7,12 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var setCmd = cobra.Command{
-	Use:   "set",
-	Short: "Sets a secret in your secret storage",
-
+var rmCmd = cobra.Command{
+	Use:   "rm",
+	Short: "Removes a key and it's value from secret storage",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
+		if len(args) < 1 {
 			fmt.Println("Incorrect usage. Use help.")
 			return
 		}
@@ -24,14 +23,13 @@ var setCmd = cobra.Command{
 
 		verifyFilePath(&filePath)
 
-		fmt.Printf("\rSetting..")
 		v := secret.New(encodingKey, filePath)
-		key, value := args[0], args[1]
-		err = v.Set(key, value)
+		key := args[0]
+		err = v.Remove(key)
 		if err != nil {
-			fmt.Printf("\r%s\n", err.Error())
+			fmt.Printf(err.Error())
 			return
 		}
-		fmt.Printf("\rValue set successfully!\n")
+		fmt.Printf("removed '%s'!\n", key)
 	},
 }
