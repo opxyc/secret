@@ -3,20 +3,25 @@ package secret
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
-	"io/fs"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/opxyc/secret/cipher"
 )
 
-func File(encodingKey, filepath string) *Vault {
-	return &Vault{
+// New gives you a new Vault. The Vault will read and write to filepath
+// after the contents are encoded/decoded using the encodingKey.
+// It will watch for changes to filepath if autoRefresh is set to True.
+func New(encodingKey, filepath string) *Vault {
+	v := &Vault{
 		encodingKey: encodingKey,
 		filePath:    filepath,
 		keyValues:   make(map[string]string),
 	}
+	return v
 }
 
 type Vault struct {
@@ -26,6 +31,7 @@ type Vault struct {
 	keyValues   map[string]string
 }
 
+// load loads the secrets from a given file to Vault.
 func (v *Vault) load() error {
 	f, err := os.Open(v.filePath)
 	if err != nil {
@@ -46,23 +52,33 @@ func (v *Vault) load() error {
 	return nil
 }
 
+// readKeyValues decodes file contents to json format.
 func (v *Vault) readKeyValues(r io.Reader) error {
 	dec := json.NewDecoder(r)
 	return dec.Decode(&v.keyValues)
 }
 
+// save is used to save the secrets to file.
 func (v *Vault) save() error {
-	writeFile, err := os.OpenFile(v.filePath, os.O_RDWR|os.O_CREATE, fs.ModeExclusive)
+	// Create a temporary file and write to it.
+	f, err := os.CreateTemp(filepath.Dir(v.filePath), filepath.Base(v.filePath))
 	if err != nil {
+		fmt.Println("createTemp", err)
 		return err
 	}
-	defer writeFile.Close()
 
-	w, err := cipher.EncryptWriter(v.encodingKey, writeFile)
+	w, err := cipher.EncryptWriter(v.encodingKey, f)
 	if err != nil {
 		return err
 	}
-	return v.writeKeyValues(w)
+
+	err = v.writeKeyValues(w)
+	if err != nil {
+		return err
+	}
+	f.Close()
+
+	return os.Rename(f.Name(), v.filePath)
 }
 
 func (v *Vault) writeKeyValues(w io.Writer) error {
@@ -70,12 +86,15 @@ func (v *Vault) writeKeyValues(w io.Writer) error {
 	return enc.Encode(v.keyValues)
 }
 
+// Get retrieves the value corresponding to the key.
 func (v *Vault) Get(key string) (string, error) {
 	v.mutex.Lock()
 	defer v.mutex.Unlock()
-	err := v.load()
-	if err != nil {
-		return "", err
+	if len(v.keyValues) == 0 {
+		err := v.load()
+		if err != nil {
+			return "", err
+		}
 	}
 
 	value, ok := v.keyValues[key]
@@ -85,6 +104,7 @@ func (v *Vault) Get(key string) (string, error) {
 	return value, nil
 }
 
+// Set adds key,value to the secrets file.
 func (v *Vault) Set(key, value string) error {
 	v.mutex.Lock()
 	defer v.mutex.Unlock()

@@ -27,7 +27,6 @@ func encryptStream(key string, iv []byte) (cipher.Stream, error) {
 // w := EncryptWriter("some-key", f)
 // So, anything that is written to the file
 // will get encrypted before it's written to the file.
-
 func EncryptWriter(key string, w io.Writer) (*cipher.StreamWriter, error) {
 	iv := make([]byte, aes.BlockSize)
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {

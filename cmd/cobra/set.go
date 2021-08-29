@@ -22,13 +22,17 @@ var setCmd = cobra.Command{
 			fmt.Println("Failed to read the encoding key.")
 			return
 		}
-		v := secret.File(encodingKey, filePath)
+
+		verifyFilePath(&filePath)
+
+		fmt.Printf("\rSetting..")
+		v := secret.New(encodingKey, filePath)
 		key, value := args[0], args[1]
 		err = v.Set(key, value)
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Printf("\r%s\n", err.Error())
 			return
 		}
-		fmt.Println("Value set successfully!")
+		fmt.Printf("\rValue set successfully!\n")
 	},
 }

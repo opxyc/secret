@@ -21,7 +21,10 @@ var getCmd = cobra.Command{
 			fmt.Println("Failed to read the encoding key.")
 			return
 		}
-		v := secret.File(encodingKey, filePath)
+
+		verifyFilePath(&filePath)
+
+		v := secret.New(encodingKey, filePath)
 		key := args[0]
 		value, err := v.Get(key)
 		if err != nil {
