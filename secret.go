@@ -14,7 +14,6 @@ import (
 
 // New gives you a new Vault. The Vault will read and write to filepath
 // after the contents are encoded/decoded using the encodingKey.
-// It will watch for changes to filepath if autoRefresh is set to True.
 func New(encodingKey, filepath string) *Vault {
 	v := &Vault{
 		encodingKey: encodingKey,
