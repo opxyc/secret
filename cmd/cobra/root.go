@@ -11,16 +11,22 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var filePath string
-var RootCmd = cobra.Command{
-	Use:   "secret",
-	Short: "Secret is an API key and other secrets manager",
+var (
+	filePath string
+	rootCmd  = cobra.Command{
+		Use:   "secret",
+		Short: "Secret is an API key and other secrets manager",
+	}
+)
+
+func Execute() {
+	rootCmd.Execute()
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&filePath, "file", "f", "", "the path to file where secrets are stored")
-	RootCmd.AddCommand(&getCmd)
-	RootCmd.AddCommand(&setCmd)
+	rootCmd.PersistentFlags().StringVarP(&filePath, "file", "f", "", "the path to file where secrets are stored")
+	rootCmd.AddCommand(&getCmd)
+	rootCmd.AddCommand(&setCmd)
 }
 
 // getEncodingKey reads the encoding key from user

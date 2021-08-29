@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	cobra.RootCmd.Execute()
+	cobra.Execute()
 }

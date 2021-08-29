@@ -1,5 +1,7 @@
 # Secret - MiniVault to store secret key-value pairs
-> Note: Learning Purpose Only
+> Note: For Learning Purpose.
+
+> All credits to [Gophercises](https://gophercises.com/).
 
 Secret is a package that can be used to store/retrieve secrets to/from a file. It encrypts the file contents using the key that you provide.
 
@@ -7,7 +9,7 @@ Secret uses AES for encryption and `crypto/cipher` package's cipher.Stream to cr
 
 ---
 
-The repo contains a command line tool (in `cmd/`) written using the `secret` package. Below are it's details:
+The repo also contains a command line tool (in `cmd/`) written using the `secret` package.
 ## Usage
 ```
 secret [command]
